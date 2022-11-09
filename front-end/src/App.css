@@ -249,7 +249,7 @@ a:visited {
 
 a:hover,
 a:active {
-  color: #00e0e0;
+  color: #196c6c;
 }
 
 .reservation a:link,
@@ -276,7 +276,7 @@ a:active {
 
 .blue {
   font-weight: bold;
-  color: #5d5d5d;
+  color: #f81313;
 }
 
 .red {
@@ -289,6 +289,7 @@ form label {
   font-family: "sofia-pro", "Times New Roman", serif;
   font-size: 18px;
   font-weight: 600;
+  color: #34585c;
 }
 
 form input,
