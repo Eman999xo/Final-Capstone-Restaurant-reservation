@@ -18,7 +18,7 @@ function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
-  const [tablesError, setTablesError] = useState(null);
+  const [, setTablesError] = useState(null);
 
   useEffect(loadDash, [date]);
 
