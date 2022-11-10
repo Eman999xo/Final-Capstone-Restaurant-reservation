@@ -43,6 +43,7 @@ export default function Search() {
               onChange={changeHandler}
               placeholder="Enter a customer's phone number"
               value={mobile}
+              className="form-control bg-secondary bg-opacity-10"
               required
             />
               <button type="submit" className="btn btn-outline-primary ml-2">
