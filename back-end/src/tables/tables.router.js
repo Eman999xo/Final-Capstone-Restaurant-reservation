@@ -1,17 +1,14 @@
-const router = require("express").Router();
-const controller = require("./tables.controller");
-const methodNotAllowed = require("../errors/methodNotAllowed");
+/**
+ * Defines the router for tables resources.
+ *
+ * @type {Router}
+ */
 
-router
-  .route("/")
-  .post(controller.create)
-  .get(controller.list)
-  .all(methodNotAllowed);
 
-router
-  .route("/:table_id/seat")
-  .put(controller.update)
-  .delete(controller.finish)
-  .all(methodNotAllowed);
-
-module.exports = router;
+ const router = require("express").Router()
+ const controller = require("./tables.controller")
+ 
+ router.route("/").get(controller.list).post(controller.create)
+ router.route("/:table_id/seat").put(controller.update).delete(controller.delete)
+ 
+ module.exports = router
