@@ -6,7 +6,7 @@ import ReservationEdit from "../reservations/ReservationEdit";
 import { today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 import NotFound from "./NotFound";
-import Search from "../search/search";
+import Search from "../search/Search";
 import TableForm from "../tables/TableForm";
 import Seat from "../seat/seat";
 
