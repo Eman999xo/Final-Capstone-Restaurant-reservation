@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables, finishTable, updateStatus } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
-import { next, previous, today } from "../utils/date-time";
+import { listReservations, listTables } from "../utils/api";
 import { useHistory } from "react-router-dom";
-import ReservationsList from "../reservation/ReservationsList";
-import TablesList from "../tables/TablesList";
-//import moment from "moment";
+import ErrorAlert from "../layout/ErrorAlert";
+import { previous, next } from "../utils/date-time";
+import ResTable from "./ReservationDash/ResTable";
+import TableList from "./Tables/TableList";
+import "./Dashboard.css";
 
 /**
  * Defines the dashboard page.
@@ -13,103 +13,74 @@ import TablesList from "../tables/TablesList";
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-
 function Dashboard({ date }) {
+  const history = useHistory();
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
-  const history = useHistory();
-  const filterResults = true;
+  const [tablesError, setTablesError] = useState(null);
 
-  useEffect(loadDashboard, [date]);
+  useEffect(loadDash, [date]);
 
-  function loadDashboard() {
+  function loadDash() {
     const abortController = new AbortController();
-
     setReservationsError(null);
+    setTablesError(null);
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
-
-    listTables().then(setTables);
-
+    listTables(abortController.signal).then(setTables).catch(setTablesError);
     return () => abortController.abort();
   }
 
-  async function finishHandler(table_id) {
-    const abortController = new AbortController();
-    const result = window.confirm(
-      "Is this table ready to seat new guests? This cannot be undone."
-    );
-
-    if (result) {
-      await finishTable(table_id, abortController.signal);
-      loadDashboard();
-    }
-
-    return () => abortController.abort();
+  function handleToday() {
+    history.push(`/dashboard`);
   }
 
-  const cancelHandler = async (event) => {
-    const result = window.confirm(
-      "Do you want to cancel this reservation? This cannot be undone."
-    );
+  function handlePrev() {
+    const newDate = previous(date);
+    history.push(`/dashboard?date=${newDate}`);
+  }
 
-    if (result) {
-      await updateStatus(event.target.value, "cancelled");
-      loadDashboard();
-    }
-  };
+  function handleNext() {
+    history.push(`/dashboard?date=${next(date)}`);
+  }
 
   return (
     <main>
+      <div >
+        <h1>Dashboard</h1>
+      </div>
+
+      <div className="mb-5 d-flex justify-content-center">
+        <button className="btn btn-secondary mr-2" onClick={handlePrev}>
+          Previous
+        </button>
+        <button  onClick={handleToday}>
+          Today
+        </button>
+        <button  className="btn btn-primary mr-2"onClick={handleNext}>
+          Next
+        </button>
+      </div>
+      <div >
+        <h4 className="mb-5 ">Reservations for {date}</h4>
+      </div>
       <ErrorAlert error={reservationsError} />
-      <div className="group">
-        <div className="item-double">
-          <div className="group">
-            <div className="item-double">
-              <h2>
-                Reservations for {date}
-              </h2>
-            </div>
-            <div className="item centered">
-              <div className="group-row">
-                <button
-                  className="item black"
-                  onClick={() =>
-                    history.push(`/dashboard?date=${previous(date)}`)
-                  }
-                >
-                  Previous
-                </button>
-                <button
-                  className="item black"
-                  onClick={() => history.push(`/dashboard?date=${today()}`)}
-                >
-                  Today
-                </button>
-                <button
-                  className="item black"
-                  onClick={() => history.push(`/dashboard?date=${next(date)}`)}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          </div>
-          <hr></hr>
-          <div id="reservations" className="group-col">
-            <ReservationsList
-              reservations={reservations}
-              filterResults={filterResults}
-              cancelHandler={cancelHandler}
-            />
-          </div>
+      <div>
+        <h3>Reservations:</h3>
+        <div>
+          <ResTable
+            reservations={reservations}
+            setReservations={setReservations}
+            setError={setReservationsError}
+          />
         </div>
-        <div id="tables" className="item">
-          <h2>Tables</h2>
-          <hr></hr>
-          <TablesList tables={tables} finishHandler={finishHandler} />
+      </div>
+      <div >
+        <h3>Tables:</h3>
+        <div>
+          <TableList tables={tables} loadDash={loadDash} />
         </div>
       </div>
     </main>

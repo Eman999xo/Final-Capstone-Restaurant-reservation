@@ -1,64 +1,53 @@
-const knex = require("../db/connection")
+const knex = require("../db/connection");
 
-function list() {
-    return knex("tables")
-    .select("*")
-    .orderBy("table_name")
-}
-
-function read(tableId) {
-    return knex("tables")
-    .select("*")
-    .where({ table_id: tableId})
-    .first()
-}
-
-function create(table) {
-    return knex("tables")
-    .insert(table)
-    .returning("*")
-    .then((createdRecords) => createdRecords[0])
-}
-
-
-
-// seats the table --- rename this so that it makes more sense 
-function update(updatedRes, tableId) {
-    return knex.transaction(async (transaction) => {
-        await knex("reservations")
-          .where({ reservation_id: updatedRes.reservation_id })
-          .update({ status: "seated" })
-          .transacting(transaction);
-
+function list(){
     return knex("tables")
         .select("*")
-        .where({ table_id: tableId })
-        .update(updatedRes, "*")
-        .transacting(transaction)
-        .then((updatedRecord) => updatedRecord[0])
-    })
-}
+        .orderBy("table_name");
+};
 
+function create(newTable){
+    return knex("tables")
+        .insert(newTable)
+        .returning("*")
+        .then(result => result[0]);
+};
 
-// unseats the table --- rename later so that this makes more sense
-function destroy(tableId, reservationId) {
-    return knex.transaction(async (transaction) => {
-        await knex("reservations")
-          .where({ reservation_id: reservationId })
-          .update({ status: "finished" })
-          .transacting(transaction);
+function read(table_id){
     return knex("tables")
         .select("*")
-        .where({ table_id: tableId })
-        .update("reservation_id", null)
-        .then((updatedRecord) => updatedRecord[0])
-    })
+        .where({ table_id })
+        .returning("*")
+        .then(result => result[0]);
+}
+
+function readReservation(reservation_id) {
+    return knex("reservations")
+      .select("*")
+      .where({ reservation_id })
+      .returning("*")
+      .then(result => result[0]);
+  }
+
+function update(table_id, reservation_id){
+    return knex("tables")
+        .where({ table_id })
+        .update({ reservation_id })
+        .returning("*")
+        .then(result => result[0]);
+}
+
+function finish(table_id){
+    return knex("tables")
+        .where({ table_id })
+        .update("reservation_id", null);
 }
 
 module.exports = {
     list,
     create,
-    update,
     read,
-    delete: destroy
+    readReservation,
+    update,
+    finish,
 }

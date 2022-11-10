@@ -2,6 +2,8 @@ import React from "react";
 import Menu from "./Menu";
 import Routes from "./Routes";
 
+import "./Layout.css";
+
 /**
  * Defines the main layout of the application.
  *
@@ -12,15 +14,13 @@ import Routes from "./Routes";
 function Layout() {
   return (
     <div>
-      <div>
-        <div>
+        <div className="col side-bar">
           <Menu />
         </div>
-        <div>
+        <div className="col">
           <Routes />
         </div>
       </div>
-    </div>
   );
 }
 

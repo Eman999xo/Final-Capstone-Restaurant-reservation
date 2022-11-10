@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Layout from "./layout/Layout";
-import "./App.css";
+import "./App.css"
 
 /**
  * Defines the root application component.
@@ -9,13 +9,11 @@ import "./App.css";
  */
 function App() {
   return (
-    <div className="App">
-      <Switch>
-        <Route path="/">
-          <Layout />
-        </Route>
-      </Switch>
-    </div>
+    <Switch>
+      <Route path="/">
+        <Layout />
+      </Route>
+    </Switch>
   );
 }
 

@@ -1,7 +1,7 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const moment = require("moment");
-
+//const e = require("express");
 
 //Middleware
 
@@ -211,7 +211,11 @@ if(req.params.reservation_id){
  }
 }
 
-
+// async function read(req, res) {
+//   const reservation = res.locals.reservation;
+//   console.log({ data: reservation });
+//   res.json({ data: reservation });
+// }
 
 async function updateStatus(req, res, next) {
   const { reservation_id } = req.params;
@@ -224,8 +228,7 @@ async function updateRes(req, res, next) {
   const { reservation_id } = req.params;
   const reservation = req.body.data;
   const data = await service.updateRes(reservation_id, reservation);
-  reservation.reservation_id = data.reservation_id;
-  res.json({ data: reservation });
+  res.json({ data });
 }
 
 async function create(req, res){
